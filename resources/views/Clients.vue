@@ -616,9 +616,18 @@
            axios.post(this.apiurl+'api/transaction/store',this.parking_lot,this.config)
            .then(response=>{
              if(response.data.status=='ok'){
-               this.$vToastify.success(response.data.message,' ');
-                this.initialize()
-                this.closeAsign()
+               axios.put(this.apiurl+'api/parking-lot/status/'+this.parking_lot.parking_lot_id,'', this.config)
+               .then(response=>{
+                 if(response.data.status=='ok'){
+                   this.$vToastify.success(response.data.message,' ');
+                   this.initialize()
+                   this.closeAsign()
+                 }else{
+                   this.$vToastify.error(response.data.message,' ')
+                 }
+                  
+               })
+              
              }else{
                this.$vToastify.error(response.data.message,' ')
              }

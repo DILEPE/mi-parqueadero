@@ -2684,11 +2684,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.parking_lot.client_id = this.currentClientid;
       axios.post(this.apiurl + 'api/transaction/store', this.parking_lot, this.config).then(function (response) {
         if (response.data.status == 'ok') {
-          _this12.$vToastify.success(response.data.message, ' ');
+          axios.put(_this12.apiurl + 'api/parking-lot/status/' + _this12.parking_lot.parking_lot_id, '', _this12.config).then(function (response) {
+            if (response.data.status == 'ok') {
+              _this12.$vToastify.success(response.data.message, ' ');
 
-          _this12.initialize();
+              _this12.initialize();
 
-          _this12.closeAsign();
+              _this12.closeAsign();
+            } else {
+              _this12.$vToastify.error(response.data.message, ' ');
+            }
+          });
         } else {
           _this12.$vToastify.error(response.data.message, ' ');
         }
@@ -86250,14 +86256,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!*************************************!*\
   !*** ./resources/views/Clients.vue ***!
   \*************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Clients_vue_vue_type_template_id_d4f32982___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Clients.vue?vue&type=template&id=d4f32982& */ "./resources/views/Clients.vue?vue&type=template&id=d4f32982&");
 /* harmony import */ var _Clients_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Clients.vue?vue&type=script&lang=js& */ "./resources/views/Clients.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Clients_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Clients_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -86287,7 +86294,7 @@ component.options.__file = "resources/views/Clients.vue"
 /*!**************************************************************!*\
   !*** ./resources/views/Clients.vue?vue&type=script&lang=js& ***!
   \**************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

@@ -10,6 +10,7 @@ import Dashboard from './views/Dashboard'
 import Clients from   './views/Clients'
 import Tariffs from './views/Tariffs'
 import ParkingLots from './views/ParkingLots'
+import Transactions from './views/transactions'
 
 
 
@@ -72,7 +73,16 @@ const router = new VueRouter({
             path: '*', 
             redirect: '/404', 
         },
+        {
+            path: '/transactions',
+            name: 'transactions',
+            component: Transactions,
+            meta: {
+                requiresAuth: true,
+            }
+        },
     ],
+         
 });
 
 export default router

@@ -3705,8 +3705,344 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      items: [['mdi-home-city', 'Inicio', '/dashboard'], ['mdi-account-group-outline', 'Clientes', '/clients'], ['mdi-clock-start', 'Tarifas', '/tariffs'], ['mdi-fireplace-off', 'Estacionamientos', '/parking-lots']]
+      items: [['mdi-home-city', 'Inicio', '/dashboard'], ['mdi-account-group-outline', 'Clientes', '/clients'], ['mdi-clock-start', 'Tarifas', '/tariffs'], ['mdi-fireplace-off', 'Estacionamientos', '/parking-lots'], ['mdi-database-clock', 'Transacciones', '/transactions']]
     };
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/views/transactions.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/views/transactions.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      dialog: false,
+      dialogDelete: false,
+      dialogBill: false,
+      config: {
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.access_token,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      },
+      apiurl: "http://parqueaderos.test/",
+      headers: [{
+        text: 'Ubicacion',
+        align: 'start',
+        sortable: false,
+        value: 'parking_lot.lote'
+      }, {
+        text: 'Hora de Inicio',
+        value: 'time_start'
+      }, {
+        text: 'Hora Final',
+        value: 'time_stop'
+      }, {
+        text: 'Cliente',
+        value: 'client.name'
+      }, {
+        text: 'Vehiculo',
+        value: 'vehicle.plate'
+      }, {
+        text: 'Fecha',
+        value: 'created_at'
+      }, {
+        text: 'Actions',
+        value: 'actions',
+        sortable: false
+      }],
+      transactions: [],
+      data: [],
+      editedIndex: -1,
+      editedItem: {
+        id: '',
+        time_stop: '',
+        time_start: ''
+      },
+      defaultItem: {
+        id: '',
+        time_stop: '',
+        time_start: ''
+      }
+    };
+  },
+  computed: {
+    formTitle: function formTitle() {
+      return this.editedIndex === -1 ? '' : 'Editar Transaccion';
+    }
+  },
+  watch: {
+    dialog: function dialog(val) {
+      val || this.close();
+    },
+    dialogDelete: function dialogDelete(val) {
+      val || this.closeDelete();
+    }
+  },
+  created: function created() {
+    this.initialize();
+  },
+  methods: {
+    initialize: function initialize() {
+      var _this = this;
+
+      axios.get(this.apiurl + 'api/transaction/list', this.config).then(function (response) {
+        if (response.data.status == "ok") {
+          _this.transactions = response.data.data;
+        } else {
+          console.log(response);
+        }
+      });
+    },
+    editItem: function editItem(item) {
+      this.editedIndex = this.transactions.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+    },
+    billItem: function billItem(item) {
+      this.editedIndex = this.transactions.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogBill = true;
+    },
+    deleteItem: function deleteItem(item) {
+      this.editedIndex = this.transactions.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
+    deleteItemConfirm: function deleteItemConfirm() {
+      var _this2 = this;
+
+      axios["delete"](this.apiurl + 'api/tariff/destroy/' + this.editedItem.id, this.config).then(function (response) {
+        if (response.data.status == 'ok') {
+          _this2.$vToastify.success(response.data.message, ' ');
+
+          _this2.initialize();
+        } else {
+          _this2.$$vToastify.error(response.data.message, ' ');
+        }
+      });
+      this.tariffs.splice(this.editedIndex, 1);
+      this.closeDelete();
+    },
+    close: function close() {
+      var _this3 = this;
+
+      this.dialog = false;
+      this.$nextTick(function () {
+        _this3.editedItem = Object.assign({}, _this3.defaultItem);
+        _this3.editedIndex = -1;
+      });
+    },
+    closeBill: function closeBill() {
+      var _this4 = this;
+
+      this.dialogBill = false;
+      this.$nextTick(function () {
+        _this4.editedItem = Object.assign({}, _this4.defaultItem);
+        _this4.editedIndex = -1;
+      });
+    },
+    closeDelete: function closeDelete() {
+      var _this5 = this;
+
+      this.dialogDelete = false;
+      this.$nextTick(function () {
+        _this5.editedItem = Object.assign({}, _this5.defaultItem);
+        _this5.editedIndex = -1;
+      });
+    },
+    confirmBill: function confirmBill() {
+      var _this6 = this;
+
+      console.log(this.editedItem);
+      axios.post(this.apiurl + 'api/bill/store', this.editedItem, this.config).then(function (response) {
+        if (response.data.status == 'ok') {
+          _this6.$vToastify.success(response.data.message, ' ');
+
+          _this6.editedItem.bill_id = response.data.data;
+          axios.put(_this6.apiurl + 'api/transaction/update/' + _this6.editedItem.id, _this6.editedItem, _this6.config).then(function (response) {})["catch"](function (error) {
+            _this6.$vToastify.error('Error al actualizar la informacion');
+          });
+
+          _this6.initialize();
+
+          _this6.closeBill();
+        } else {
+          _this6.$vToastify.error(response.data.message, ' ');
+        }
+      });
+    },
+    save: function save() {
+      var _this7 = this;
+
+      if (this.editedIndex > -1) {
+        axios.put(this.apiurl + 'api/transaction/update/' + this.editedItem.id, this.editedItem, this.config).then(function (response) {
+          if (response.data.status == 'ok') {
+            axios.put(_this7.apiurl + 'api/parking-lot/status-free/' + _this7.editedItem.parking_lot_id, '', _this7.config).then(function (response) {
+              if (response.data.status == 'ok') {
+                _this7.$vToastify.success(response.data.message, ' ');
+
+                _this7.initialize();
+
+                _this7.close();
+              } else {
+                _this7.$vToastify.error(response.data.message, ' ');
+              }
+            });
+          } else {
+            _this7.$vToastify.error(response.data.message, ' ');
+          }
+        });
+      }
+    }
   }
 });
 
@@ -24472,6 +24808,385 @@ var render = function() {
     ],
     1
   )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/views/transactions.vue?vue&type=template&id=7d931a0e&":
+/*!*******************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/views/transactions.vue?vue&type=template&id=7d931a0e& ***!
+  \*******************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("v-data-table", {
+    staticClass: "elevation-1",
+    attrs: { headers: _vm.headers, items: _vm.transactions },
+    scopedSlots: _vm._u([
+      {
+        key: "top",
+        fn: function() {
+          return [
+            _c(
+              "v-toolbar",
+              { attrs: { flat: "" } },
+              [
+                _c("v-toolbar-title", [_vm._v("Administrar Transacciones")]),
+                _vm._v(" "),
+                _c("v-divider", {
+                  staticClass: "mx-4",
+                  attrs: { inset: "", vertical: "" }
+                }),
+                _vm._v(" "),
+                _c("v-spacer"),
+                _vm._v(" "),
+                _c(
+                  "v-dialog",
+                  {
+                    attrs: { "max-width": "500px" },
+                    model: {
+                      value: _vm.dialog,
+                      callback: function($$v) {
+                        _vm.dialog = $$v
+                      },
+                      expression: "dialog"
+                    }
+                  },
+                  [
+                    _c(
+                      "v-card",
+                      [
+                        _c("v-card-title", [
+                          _c("span", { staticClass: "headline" }, [
+                            _vm._v(_vm._s(_vm.formTitle))
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "v-card-text",
+                          [
+                            _c(
+                              "v-container",
+                              [
+                                _c(
+                                  "v-row",
+                                  [
+                                    _vm.editedIndex > -1
+                                      ? [
+                                          _c("small", [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.editedItem.parking_lot.lote
+                                              )
+                                            )
+                                          ]),
+                                          _vm._v(" "),
+                                          _c("small", [
+                                            _vm._v(
+                                              _vm._s(_vm.editedItem.client.name)
+                                            )
+                                          ]),
+                                          _vm._v(" "),
+                                          _c("small", [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.editedItem.vehicle.plate
+                                              )
+                                            )
+                                          ])
+                                        ]
+                                      : _vm._e(),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-col",
+                                      {
+                                        attrs: { cols: "12", sm: "6", md: "4" }
+                                      },
+                                      [
+                                        _c("v-text-field", {
+                                          attrs: {
+                                            type: "time",
+                                            label: "Hora Inicio"
+                                          },
+                                          model: {
+                                            value: _vm.editedItem.time_start,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.editedItem,
+                                                "time_start",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "editedItem.time_start"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-col",
+                                      {
+                                        attrs: { cols: "12", sm: "6", md: "4" }
+                                      },
+                                      [
+                                        _c("v-text-field", {
+                                          attrs: {
+                                            type: "time",
+                                            label: "Hora Final"
+                                          },
+                                          model: {
+                                            value: _vm.editedItem.time_stop,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.editedItem,
+                                                "time_stop",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "editedItem.time_stop"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  2
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-card-actions",
+                          [
+                            _c("v-spacer"),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: { color: "blue darken-1", text: "" },
+                                on: { click: _vm.close }
+                              },
+                              [_vm._v("\n              Cancelar\n            ")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: { color: "blue darken-1", text: "" },
+                                on: { click: _vm.save }
+                              },
+                              [_vm._v("\n              Guardar\n            ")]
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-dialog",
+                  {
+                    attrs: { "max-width": "500px" },
+                    model: {
+                      value: _vm.dialogDelete,
+                      callback: function($$v) {
+                        _vm.dialogDelete = $$v
+                      },
+                      expression: "dialogDelete"
+                    }
+                  },
+                  [
+                    _c(
+                      "v-card",
+                      [
+                        _c("v-card-title", { staticClass: "headline" }, [
+                          _vm._v("¿Esta seguro que desea eliminar esta tarifa?")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "v-card-actions",
+                          [
+                            _c("v-spacer"),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: { color: "blue darken-1", text: "" },
+                                on: { click: _vm.closeDelete }
+                              },
+                              [_vm._v("Cancelar")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: { color: "blue darken-1", text: "" },
+                                on: { click: _vm.deleteItemConfirm }
+                              },
+                              [_vm._v("OK")]
+                            ),
+                            _vm._v(" "),
+                            _c("v-spacer")
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "v-dialog",
+                  {
+                    attrs: { "max-width": "500px" },
+                    model: {
+                      value: _vm.dialogBill,
+                      callback: function($$v) {
+                        _vm.dialogBill = $$v
+                      },
+                      expression: "dialogBill"
+                    }
+                  },
+                  [
+                    _c(
+                      "v-card",
+                      [
+                        _c("v-card-title", { staticClass: "headline" }, [
+                          _vm._v(
+                            "¿Esta seguro de generar una factura para esta transaccion?"
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "v-card-actions",
+                          [
+                            _c("v-spacer"),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: { color: "blue darken-1", text: "" },
+                                on: { click: _vm.closeBill }
+                              },
+                              [_vm._v("Cancelar")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: { color: "blue darken-1", text: "" },
+                                on: { click: _vm.confirmBill }
+                              },
+                              [_vm._v("OK")]
+                            ),
+                            _vm._v(" "),
+                            _c("v-spacer")
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ]
+        },
+        proxy: true
+      },
+      {
+        key: "item.actions",
+        fn: function(ref) {
+          var item = ref.item
+          return [
+            _c(
+              "v-icon",
+              {
+                staticClass: "mr-2",
+                attrs: { small: "" },
+                on: {
+                  click: function($event) {
+                    return _vm.editItem(item)
+                  }
+                }
+              },
+              [_vm._v("\n      mdi-pencil\n    ")]
+            ),
+            _vm._v(" "),
+            item.time_stop != null
+              ? [
+                  _c(
+                    "v-icon",
+                    {
+                      staticClass: "mr-2",
+                      attrs: { small: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.billItem(item)
+                        }
+                      }
+                    },
+                    [_vm._v("\n      mdi-text-box-check\n    ")]
+                  )
+                ]
+              : _vm._e(),
+            _vm._v(" "),
+            _c(
+              "v-icon",
+              {
+                attrs: { small: "" },
+                on: {
+                  click: function($event) {
+                    return _vm.deleteItem(item)
+                  }
+                }
+              },
+              [_vm._v("\n      mdi-delete\n    ")]
+            )
+          ]
+        }
+      },
+      {
+        key: "no-data",
+        fn: function() {
+          return [
+            _c(
+              "v-btn",
+              { attrs: { color: "primary" }, on: { click: _vm.initialize } },
+              [_vm._v("\n      Reset\n    ")]
+            )
+          ]
+        },
+        proxy: true
+      }
+    ])
+  })
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -86025,9 +86740,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _views_Clients__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./views/Clients */ "./resources/views/Clients.vue");
 /* harmony import */ var _views_Tariffs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./views/Tariffs */ "./resources/views/Tariffs.vue");
 /* harmony import */ var _views_ParkingLots__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./views/ParkingLots */ "./resources/views/ParkingLots.vue");
+/* harmony import */ var _views_transactions__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./views/transactions */ "./resources/views/transactions.vue");
 
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]); // Pages
+
 
 
 
@@ -86086,6 +86803,13 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
   }, {
     path: '*',
     redirect: '/404'
+  }, {
+    path: '/transactions',
+    name: 'transactions',
+    component: _views_transactions__WEBPACK_IMPORTED_MODULE_9__["default"],
+    meta: {
+      requiresAuth: true
+    }
   }]
 });
 /* harmony default export */ __webpack_exports__["default"] = (router);
@@ -86256,15 +86980,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!*************************************!*\
   !*** ./resources/views/Clients.vue ***!
   \*************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Clients_vue_vue_type_template_id_d4f32982___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Clients.vue?vue&type=template&id=d4f32982& */ "./resources/views/Clients.vue?vue&type=template&id=d4f32982&");
 /* harmony import */ var _Clients_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Clients.vue?vue&type=script&lang=js& */ "./resources/views/Clients.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Clients_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Clients_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -86294,7 +87017,7 @@ component.options.__file = "resources/views/Clients.vue"
 /*!**************************************************************!*\
   !*** ./resources/views/Clients.vue?vue&type=script&lang=js& ***!
   \**************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -86800,6 +87523,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SideMenu_vue_vue_type_template_id_3fef94f5___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_SideMenu_vue_vue_type_template_id_3fef94f5___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/views/transactions.vue":
+/*!******************************************!*\
+  !*** ./resources/views/transactions.vue ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _transactions_vue_vue_type_template_id_7d931a0e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./transactions.vue?vue&type=template&id=7d931a0e& */ "./resources/views/transactions.vue?vue&type=template&id=7d931a0e&");
+/* harmony import */ var _transactions_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./transactions.vue?vue&type=script&lang=js& */ "./resources/views/transactions.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _transactions_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _transactions_vue_vue_type_template_id_7d931a0e___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _transactions_vue_vue_type_template_id_7d931a0e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/views/transactions.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/views/transactions.vue?vue&type=script&lang=js&":
+/*!*******************************************************************!*\
+  !*** ./resources/views/transactions.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_transactions_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/babel-loader/lib??ref--4-0!../../node_modules/vue-loader/lib??vue-loader-options!./transactions.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/views/transactions.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_transactions_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/views/transactions.vue?vue&type=template&id=7d931a0e&":
+/*!*************************************************************************!*\
+  !*** ./resources/views/transactions.vue?vue&type=template&id=7d931a0e& ***!
+  \*************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_transactions_vue_vue_type_template_id_7d931a0e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../node_modules/vue-loader/lib??vue-loader-options!./transactions.vue?vue&type=template&id=7d931a0e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/views/transactions.vue?vue&type=template&id=7d931a0e&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_transactions_vue_vue_type_template_id_7d931a0e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_transactions_vue_vue_type_template_id_7d931a0e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

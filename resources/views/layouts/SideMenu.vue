@@ -45,6 +45,7 @@ export default {
       ['mdi-account-group-outline', 'Clientes','/clients'],
       ['mdi-clock-start', 'Tarifas','/tariffs'],
       ['mdi-fireplace-off','Estacionamientos','/parking-lots'],
+      ['mdi-database-clock','Transacciones','/transactions'],
     ],
   }),
 

@@ -434,7 +434,7 @@
             
            axios.put(this.apiurl+'api/parking-lot/update/'+this.editedItem.id,this.editedItem,this.config)
            .then(response=>{
-             if(response.data.status=='ok'){
+             if(response.data.status=='ok'){    
                this.$vToastify.success(response.data.message,' ');
                this.initialize()  
              }else{

@@ -120,6 +120,16 @@
         mdi-text-box-check
       </v-icon>
       </template>
+      <template v-if="item.bill_id!=null">
+         <v-icon
+        small
+        class="mr-2"
+        @click="printBill(item)"
+      >
+        mdi-printer
+      </v-icon>
+
+      </template>
       <v-icon
         small
         @click="deleteItem(item)"
@@ -289,6 +299,9 @@
          }
           
         });
+      },
+      printBill(){
+       
       },
 
       save () {

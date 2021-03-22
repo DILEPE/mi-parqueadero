@@ -3860,6 +3860,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -4020,6 +4030,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
+    printBill: function printBill() {},
     save: function save() {
       var _this7 = this;
 
@@ -25153,6 +25164,24 @@ var render = function() {
                       }
                     },
                     [_vm._v("\n      mdi-text-box-check\n    ")]
+                  )
+                ]
+              : _vm._e(),
+            _vm._v(" "),
+            item.bill_id != null
+              ? [
+                  _c(
+                    "v-icon",
+                    {
+                      staticClass: "mr-2",
+                      attrs: { small: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.printBill(item)
+                        }
+                      }
+                    },
+                    [_vm._v("\n      mdi-printer\n    ")]
                   )
                 ]
               : _vm._e(),
@@ -86865,7 +86894,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   actions: {
     retrieveToken: function retrieveToken(context, credentials) {
       return new Promise(function (resolve, reject) {
-        axios__WEBPACK_IMPORTED_MODULE_2___default.a.post('http://parqueaderos.test/api/auth/login', {
+        axios__WEBPACK_IMPORTED_MODULE_2___default.a.post("http://parqueaderos.test/" + 'api/auth/login', {
           email: credentials.email,
           password: credentials.password
         }).then(function (response) {

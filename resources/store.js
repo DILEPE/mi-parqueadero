@@ -25,7 +25,7 @@ Vue.use(Vuex)
     retrieveToken(context, credentials) {
 
       return new Promise((resolve, reject) => {
-        axios.post('http://parqueaderos.test/api/auth/login', {
+        axios.post(process.env.MIX_API_URL+'api/auth/login', {
           email: credentials.email,
           password: credentials.password,
         })

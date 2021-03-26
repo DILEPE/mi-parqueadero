@@ -42,17 +42,28 @@
                   <v-col
                     cols="12"
                     sm="6"
-                    md="4"
+                    md="6"
                   >
                     <v-text-field
                       v-model="editedItem.name"
                       label="Nombre"
                     ></v-text-field>
                   </v-col>
+                   <v-col
+                    cols="12"
+                    sm="6"
+                    md="6"
+                  >
+                  <v-select
+                     v-model="editedItem.type_vehicle"
+                     :items="types"
+                     label="tipo de vehiculo"
+                  ></v-select>
+                  </v-col>
                   <v-col
                     cols="12"
                     sm="6"
-                    md="4"
+                    md="6"
                   >
                     <v-text-field
                       v-model="editedItem.value_minute"
@@ -62,7 +73,7 @@
                   <v-col
                     cols="12"
                     sm="6"
-                    md="4"
+                    md="6"
                   >
                     <v-text-field
                       v-model="editedItem.value_hour"
@@ -72,7 +83,7 @@
                   <v-col
                     cols="12"
                     sm="6"
-                    md="4"
+                    md="6"
                   >
                     <v-text-field
                       v-model="editedItem.discount"
@@ -82,7 +93,7 @@
                   <v-col
                     cols="12"
                     sm="6"
-                    md="4"
+                    md="6"
                   >
                     <v-text-field
                       v-model="editedItem.condition"
@@ -166,7 +177,12 @@
              }
       },
       apiurl:process.env.MIX_API_URL,
-      
+      types:[
+          {text:'automovil',value:'automovil'},
+          {text:'bicicleta',value:'bicicleta'},
+          {text:'moto',value:'moto'},
+      ],
+     
       headers: [
         {
           text: 'Nombre',
@@ -183,6 +199,7 @@
       editedItem: {
         id:'',
         name: '',
+        type_vehicle: '',
         value_minute: 0,
         value_hour: 0,
         discount:0,
@@ -191,6 +208,7 @@
       defaultItem: {
         id:'',
         name: '',
+        type_vehicle: '',
         value_minute: 0,
         value_hour: 0,
         discount:0,

@@ -1,9 +1,80 @@
 <template>
-  <v-data-table
+  <v-card>
+    <v-card-title>Búsqueda</v-card-title>
+  <v-card-text>
+    <v-row>
+      <v-col
+       cols="12"
+        sm="2"
+        md="2"
+      >
+        <v-text-field
+           v-model="search.plate"
+            label="Placa vehiculo"
+        ></v-text-field>
+      </v-col>
+      <v-col
+       cols="12"
+        sm="2"
+        md="2"
+      >
+        <v-text-field
+        v-model="search.parking_lot_id"
+            label="Ubicacion"
+        ></v-text-field>
+      </v-col>
+      <v-col
+       cols="12"
+        sm="2"
+        md="2"
+      >
+        <v-text-field
+        v-model="search.client_id"
+            label="cliente"
+        ></v-text-field>
+      </v-col>
+      <v-col
+       cols="12"
+        sm="2"
+        md="2"
+      >
+        <v-text-field
+        v-model="search.date_start"
+            label="fecha inicial"
+            type="date"
+        ></v-text-field>
+      </v-col>
+      <v-col
+       cols="12"
+        sm="2"
+        md="2"
+      >
+        <v-text-field
+        v-model="search.date_stop"
+            label="fecha final"
+            type="date"
+        ></v-text-field>
+      </v-col>
+      <v-col
+       cols="12"
+        sm="2"
+        md="2"
+      >
+         <v-btn
+           depressed
+           color="primary"
+         >
+           Buscar
+        </v-btn>
+        </v-col>
+    </v-row>
+  </v-card-text>
+    <v-data-table
     :headers="headers"
     :items="transactions"
     class="elevation-1"
   >
+    
     <template v-slot:top>
       <v-toolbar
         flat
@@ -27,17 +98,24 @@
             <v-card-text>
               <v-container>
                 <v-row >
+                  <v-col 
+                  cols="12"
+                    sm="12"
+                    md="12"
+                  >
                   <template v-if="editedIndex> -1">
-                <small>{{editedItem.parking_lot.lote}}</small>
+                    <ul>
+                     <li> Ubicacion:{{editedItem.parking_lot.lote}}</li>
                
-                  <small>{{editedItem.client.name}}</small>
-                  <small>{{editedItem.vehicle.plate}}</small>
-                  
+                     <li> Cliente:{{editedItem.client.name}}</li>
+                     <li> Placa o serial:{{editedItem.vehicle.plate}}</li>
+                    </ul>
                   </template>
+                  </v-col>
                  <v-col
                     cols="12"
                     sm="6"
-                    md="4"
+                    md="6"
                   >
                     <v-text-field
                       v-model="editedItem.time_start"
@@ -48,14 +126,36 @@
                   <v-col
                     cols="12"
                     sm="6"
-                    md="4"
+                    md="6"
+                  >
+                    <v-text-field
+                      v-model="editedItem.date_start"
+                      type="date"
+                      label="Hora Inicio"
+                    ></v-text-field>
+                  </v-col>    
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="6"
                   >
                     <v-text-field
                       v-model="editedItem.time_stop"
                       type="time"
                       label="Hora Final"
                     ></v-text-field>
-                  </v-col>    
+                  </v-col> 
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="6"
+                  >
+                    <v-text-field
+                      v-model="editedItem.date_stop"
+                      type="date"
+                      label="Hora Final"
+                    ></v-text-field>
+                  </v-col>     
                 </v-row>
               </v-container>
             </v-card-text>
@@ -80,7 +180,7 @@
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
-            <v-card-title class="headline">¿Esta seguro que desea eliminar esta tarifa?</v-card-title>
+            <v-card-title class="headline">¿Esta seguro que desea eliminar esta transaccion?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDelete">Cancelar</v-btn>
@@ -146,8 +246,10 @@
       </v-btn>
     </template>
   </v-data-table>
+  </v-card>
 </template>
 <script>
+  import moment from 'moment';
   export default {
    
     data: () => ({
@@ -171,12 +273,21 @@
           value: 'parking_lot.lote',
         },
         { text: 'Hora de Inicio', value: 'time_start' },
+        { text: 'Fecha de Inicio', value: 'date_start' },
         { text: 'Hora Final', value: 'time_stop' },
+        { text: 'Fecha Final', value: 'date_stop' },
         { text: 'Cliente', value: 'client.name' },
         { text: 'Vehiculo', value: 'vehicle.plate' },
-        { text: 'Fecha', value: 'created_at' },
         { text: 'Actions', value: 'actions', sortable: false },
+        
       ],
+      search: {
+        parking_lot_id:'',
+        client_id:'',
+        date_start:'',
+        date_stop:'',
+        plate:''
+      },
      transactions: [],
      data:[],
       editedIndex: -1,
@@ -184,12 +295,15 @@
         id:'',
         time_stop:'',
         time_start:'',
+        date_start:'',
+        date_stop:'',
       },
       defaultItem: {
         id:'',
         time_stop: '',
         time_start:'',
-      
+        date_start:'',
+        date_stop:'', 
       },
     }),
 
@@ -228,7 +342,7 @@
       
       editItem (item) {
           this.editedIndex = this.transactions.indexOf(item)
-          this.editedItem = Object.assign({}, item)  
+          this.editedItem = Object.assign({}, item) 
           this.dialog = true
       },
       billItem (item) {

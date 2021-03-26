@@ -48,6 +48,7 @@
                     <v-text-field
                       v-model="editedItem.lote"
                       label="lote"
+                      type="number"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -421,13 +422,13 @@
       save () {
         switch(this.editedItem.type_vehicle){
               case 'automovil':
-              this.editItem.lote='A '+ this.editItem.lote
+              this.editedItem.lote='A '+ this.editedItem.lote
               break;
               case 'bicicleta':
-                this.editItem.lote='B '+ this.editItem.lote
+                this.editedItem.lote='B '+ this.editedItem.lote
                 break;
                case 'moto':
-                 this.editItem.lote='M'+ this.editItem.lote 
+                 this.editedItem.lote='M'+ this.editedItem.lote 
                  break;
             }
         if (this.editedIndex > -1) {

@@ -210,18 +210,29 @@
                       <v-col
                         cols="12"
                         sm="6"
-                        md="4"
+                        md="6"
                       >
                       <v-text-field
                         v-model="parking_lot.time_start"
-                        type=time
+                        type="time"
                         label="Hora de Inicio"
+                      ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                      >
+                      <v-text-field
+                        v-model="parking_lot.date_start"
+                        type="date"
+                        label="fecha de Inicio"
                       ></v-text-field>
                       </v-col>
                       <v-col
                          cols="12"
                          sm="6"
-                         md="4"
+                         md="6"
                       >
                       <v-select
                         v-model="parking_lot.tariff_id"
@@ -362,6 +373,7 @@
           value: 'plate',
         },
         { text: 'Tipo Vehiculo', value: 'type_vehicle' },
+        { text: 'ubicacion', value: 'parking_lot.lote' },
         { text: 'Actions', value: 'actions', sortable: false },
         
       ],
@@ -400,6 +412,7 @@
       parking_lot:{
         id:'',
         time_start:'',
+        date_start:'',
         vehicle_id:'',
         parking_lot_id:'',
         tariff_id:'',
@@ -408,6 +421,7 @@
       defaultParkingLot:{
         id:'',
         time_start:'',
+        date_start:'',
         vehicle_id:'',
         parking_lot_id:'',
         tariff_id:'',
@@ -616,7 +630,7 @@
            axios.post(this.apiurl+'api/transaction/store',this.parking_lot,this.config)
            .then(response=>{
              if(response.data.status=='ok'){
-               axios.put(this.apiurl+'api/parking-lot/status/'+this.parking_lot.parking_lot_id,'', this.config)
+               axios.put(this.apiurl+'api/parking-lot/status/'+this.parking_lot.parking_lot_id,this.parking_lot, this.config)
                .then(response=>{
                  if(response.data.status=='ok'){
                    this.$vToastify.success(response.data.message,' ');

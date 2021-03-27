@@ -4,34 +4,49 @@
   <v-card-text>
     <v-row>
       <v-col
-       cols="12"
+            cols="12"
+            sm="2"
+            md="2"
+        >
+        <v-select
+              v-model="type"
+              :items="types"
+              label="tipo de vehiculo"
+              @change="changeVehicle(type)"
+        ></v-select>
+        </v-col>
+      <v-col
+        cols="12"
         sm="2"
         md="2"
       >
-        <v-text-field
+        <v-select
            v-model="search.plate"
             label="Placa vehiculo"
-        ></v-text-field>
+            :items="vehicles"
+        ></v-select>
       </v-col>
       <v-col
        cols="12"
-        sm="2"
-        md="2"
+        sm="1"
+        md="1"
       >
-        <v-text-field
+        <v-select
         v-model="search.parking_lot_id"
             label="Ubicacion"
-        ></v-text-field>
+            :items="parking_lots"
+        ></v-select>
       </v-col>
       <v-col
        cols="12"
         sm="2"
         md="2"
       >
-        <v-text-field
+        <v-select
         v-model="search.client_id"
             label="cliente"
-        ></v-text-field>
+            :items="clients"
+        ></v-select>
       </v-col>
       <v-col
        cols="12"
@@ -55,16 +70,49 @@
             type="date"
         ></v-text-field>
       </v-col>
-      <v-col
-       cols="12"
-        sm="2"
-        md="2"
-      >
+    </v-row>
+    <v-row>
+         <v-col
+         cols="12"
+         sm="2"
+         md="2"
+        >
          <v-btn
            depressed
            color="primary"
+           v-on:click='searchData'
          >
-           Buscar
+          Buscar
+        </v-btn>
+        </v-col>
+        <v-col
+         cols="12"
+         sm="2"
+         md="2"
+        >
+         <v-btn
+           depressed
+           color="secondary"
+           v-on:click='clearData'
+         >
+           <v-icon dark>
+           mdi-eraser
+         </v-icon>          
+         </v-btn>
+         </v-col>
+         <v-col
+          cols="12"
+          sm="2"
+          md="2"
+        >
+         <v-btn
+           depressed
+           color="teal"
+           v-on:click='report'
+         >
+         <v-icon dark>
+          mdi-microsoft-excel
+        </v-icon>
         </v-btn>
         </v-col>
     </v-row>
@@ -286,8 +334,24 @@
         client_id:'',
         date_start:'',
         date_stop:'',
-        plate:''
+        vehicle_id:''
       },
+      defaultSearch: {
+        parking_lot_id:'',
+        client_id:'',
+        date_start:'',
+        date_stop:'',
+        vehicle_id:''
+      },
+      
+      type:'',
+        types: [{'text':'automovil','value':'automovil'},
+           {'text':'bicicleta','value':'bicicleta'},
+           {'text':'moto','value':'moto'},
+        ],
+      clients: [],
+      vehicles: [],
+      parking_lots: [],
      transactions: [],
      data:[],
       editedIndex: -1,
@@ -332,14 +396,55 @@
          then(response=>{
            if(response.data.status=="ok"){
              this.transactions=response.data.data
-             
-             
+           }else{
+             console.log(response)
+           }
+         }) 
+         axios.get(this.apiurl+'api/client/options',this.config).
+         then(response=>{
+           if(response.data.status=="ok"){
+             this.clients=response.data.data
            }else{
              console.log(response)
            }
          }) 
       },
-      
+      changeVehicle(type){
+       axios.get(this.apiurl+'api/vehicle/options/'+type,this.config).
+         then(response=>{
+           if(response.data.status=="ok"){
+             this.vehicles=response.data.data
+           }else{
+             console.log(response)
+           }
+         }) 
+         axios.get(this.apiurl+'api/parking-lot/options-search/'+type,this.config).
+         then(response=>{
+           if(response.data.status=="ok"){
+             this.parking_lots=response.data.data
+           }else{
+             console.log(response)
+           }
+         }) 
+      },
+      searchData(){
+       axios.post(this.apiurl+'api/transaction/search',this.search,this.config)
+       .then(response=>{
+         if(response.data.status=="ok"){
+            this.transactions=response.data.data
+        }else{  
+          console.log(response)
+          }
+       })
+      },
+      clearData(){
+       this.search=this.defaultSearch
+       this.type=''
+       this.initialize()
+      },
+        report(){
+        
+        },
       editItem (item) {
           this.editedIndex = this.transactions.indexOf(item)
           this.editedItem = Object.assign({}, item) 

@@ -5,7 +5,7 @@
   <v-app id="inspire">
     <v-card
       class="mx-auto"
-      height="300"
+      height="600"
       width="300"
     >
       <v-navigation-drawer
@@ -46,6 +46,7 @@ export default {
       ['mdi-clock-start', 'Tarifas','/tariffs'],
       ['mdi-fireplace-off','Estacionamientos','/parking-lots'],
       ['mdi-database-clock','Transacciones','/transactions'],
+      ['mdi-file-document-multiple','Facturas','/bills'],
     ],
   }),
 

@@ -11,6 +11,7 @@ import Clients from   './views/Clients'
 import Tariffs from './views/Tariffs'
 import ParkingLots from './views/ParkingLots'
 import Transactions from './views/transactions'
+import Bills from './views/bills'
 
 
 
@@ -80,8 +81,18 @@ const router = new VueRouter({
             meta: {
                 requiresAuth: true,
             }
+            
+        },
+        {
+            path: '/bills',
+            name: 'bills',
+            component: Bills,
+            meta: {
+                requiresAuth: true,
+            }
         },
     ],
+       
          
 });
 

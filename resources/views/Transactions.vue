@@ -54,8 +54,8 @@
         md="2"
       >
         <v-text-field
-        v-model="search.date_start"
-            label="fecha inicial"
+        v-model="search.date"
+            label="fecha"
             type="date"
         ></v-text-field>
       </v-col>
@@ -64,11 +64,20 @@
         sm="2"
         md="2"
       >
-        <v-text-field
-        v-model="search.date_stop"
-            label="fecha final"
-            type="date"
-        ></v-text-field>
+      <v-radio-group
+      v-model="fechas"
+      >
+      <v-radio
+      
+        label="Fecha inicial"
+        value="fecha_inicial"
+      ></v-radio>
+      <v-radio
+     
+        label="Fecha final"
+        value="fecha_final"
+      ></v-radio>
+    </v-radio-group>
       </v-col>
     </v-row>
     <v-row>
@@ -108,7 +117,7 @@
          <v-btn
            depressed
            color="teal"
-           v-on:click='report'
+           v-on:click='report(transactions)'
          >
          <v-icon dark>
           mdi-microsoft-excel
@@ -239,6 +248,7 @@
         </v-dialog>
         <v-dialog v-model="dialogBill" max-width="500px">
           <v-card>
+            <template v-if="editedItem.bill==null">
             <v-card-title class="headline">¿Esta seguro de generar una factura para esta transaccion?</v-card-title>
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -246,6 +256,15 @@
               <v-btn color="blue darken-1" text @click="confirmBill">OK</v-btn>
               <v-spacer></v-spacer>
             </v-card-actions>
+            </template>
+            <template v-else>
+              <v-card-title class="headline">La transaccion actual ya tiene factura</v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="closeBill">Aceptar</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+            </template>
           </v-card>
         </v-dialog>
       </v-toolbar>
@@ -268,7 +287,7 @@
         mdi-text-box-check
       </v-icon>
       </template>
-      <template v-if="item.bill_id!=null">
+      <template v-if="item.bill!==null">
          <v-icon
         small
         class="mr-2"
@@ -304,12 +323,22 @@
       dialog: false,
       dialogDelete: false,
       dialogBill: false,
+      fechas: null,
       config:{
            headers:{
               'Authorization':'Bearer '+localStorage.access_token,
               'Content-Type':'application/json',
               'Accept':'application/json'
              }
+      },
+      configExcel:{
+           headers:{
+              'Authorization':'Bearer '+localStorage.access_token,
+              'Content-Type':'application/json',
+              'Accept':'application/json'
+             },
+              responseType:'blob',
+              dataType:'binary',
       },
       apiurl:process.env.MIX_API_URL,
       
@@ -334,14 +363,18 @@
         client_id:'',
         date_start:'',
         date_stop:'',
-        vehicle_id:''
+        vehicle_id:'',
+        date:'',
+        type:'',
       },
       defaultSearch: {
         parking_lot_id:'',
         client_id:'',
         date_start:'',
         date_stop:'',
-        vehicle_id:''
+        vehicle_id:'',
+        date:'',
+        type:'',
       },
       
       type:'',
@@ -357,6 +390,7 @@
       editedIndex: -1,
       editedItem: {
         id:'',
+        bill:null,
         time_stop:'',
         time_start:'',
         date_start:'',
@@ -364,6 +398,7 @@
       },
       defaultItem: {
         id:'',
+        bill:null,
         time_stop: '',
         time_start:'',
         date_start:'',
@@ -428,12 +463,24 @@
          }) 
       },
       searchData(){
+        if(this.fechas==='fecha_inicial'){
+          this.search.date_start=this.search.date
+        }
+        if(this.fechas==='fecha_final'){
+          this.search.date_stop=this.search.date
+
+        }
+        if(this.type!==''){
+          this.search.type=this.type
+
+        }
        axios.post(this.apiurl+'api/transaction/search',this.search,this.config)
        .then(response=>{
          if(response.data.status=="ok"){
             this.transactions=response.data.data
-        }else{  
-          console.log(response)
+        }
+        if(response.data.data.length==0){  
+          this.$vToastify.error(response.data.message)
           }
        })
       },
@@ -442,8 +489,22 @@
        this.type=''
        this.initialize()
       },
-        report(){
-        
+      report(list){
+         var d = new Date();
+         var date = d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+        axios.post(this.apiurl+'api/transaction/report',list,this.configExcel).
+        then(response=>{
+          const reportExcel=window.URL.createObjectURL(new Blob([response.data],{type: 'application/vnd.ms-excel'}))
+           const openDocument=document.createElement('a')
+           openDocument.href=reportExcel
+           openDocument.setAttribute('list','report.xlsx')
+           openDocument.download='reporte_'+date+'.xlsx'
+           document.body.appendChild(openDocument)
+           openDocument.click()
+        })
+         .catch(error=>{
+           this.$vToastify.error('Ha ocurrido un error al exportar el archivo')
+         })
         },
       editItem (item) {
           this.editedIndex = this.transactions.indexOf(item)
@@ -468,7 +529,7 @@
                this.$vToastify.success(response.data.message,' ');
                this.initialize()  
              }else{
-               this.$$vToastify.error(response.data.message, ' ')
+               this.$vToastify.error(response.data.message, ' ')
              }
            })  
         this.tariffs.splice(this.editedIndex, 1)
@@ -500,6 +561,7 @@
 
       confirmBill(){
         console.log(this.editedItem)
+        this.editedItem.status='Pagada'
         axios.post(this.apiurl+'api/bill/store',this.editedItem,this.config)
         .then(response=>{
           if(response.data.status=='ok'){
